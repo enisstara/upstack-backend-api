@@ -6,7 +6,7 @@ const notFound = (req, res, next) => {
 
 const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode !== 200 ? res.statusCode : 500;
-  res.status(statusCode).json({ message: err.message });
+  res.status(statusCode).json({ error: err.message });
 }
 
 module.exports = Object.freeze({

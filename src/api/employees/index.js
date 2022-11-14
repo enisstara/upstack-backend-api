@@ -3,33 +3,34 @@ const router = express.Router();
 const employeeService = require("../../services/employeeService");
 const httpStatus = require("../../enums/httpStatus");
 
-router.get("/", (req, res) => {
+router.get("/", async (req, res, next) => {
   try {
-    const data = employeeService.getEmployees();
+    const data = await employeeService.getEmployees();
     res.status(httpStatus.Ok).send({ data });
-  } catch (e) {
-    console.error("Error:", e.message);
-    res.status(httpStatus.ServerError).send("Something went wrong!");
+  } catch (err) {
+    next(err);
   }
 });
 
-router.get("/:employeeId", (req, res) => {
+router.get("/:employeeId", async (req, res, next) => {
   try {
-    const data = employeeService.getEmployeeById(parseInt(req.params.employeeId));
-    res.status(httpStatus.Ok).send({ data });
-  } catch (e) {
-    console.error("Error:", e.message);
-    res.status(httpStatus.ServerError).send("Something went wrong!");
+    const data = await employeeService.getEmployeeById(parseInt(req.params.employeeId));
+    res.status(httpStatus.Ok).json({ data });
+  } catch (err) {
+    next(err);
   }
 });
 
-router.get("/search/:value", (req, res) => {
+router.get("/search/:value", async (req, res, next) => {
   try {
-    const data = employeeService.getEmployeesBySearch(req.params.value);
+    const format = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+    const value = req.params.value;
+    console.log(format.test(value));
+
+    const data = await employeeService.getEmployeesBySearch(req.params.value);
     res.status(httpStatus.Ok).send({ data });
-  } catch (e) {
-    console.error("Error:", e.message);
-    res.status(httpStatus.ServerError).send("Something went wrong!");
+  } catch (err) {
+    next(err);
   }
 });
 
